@@ -19,15 +19,18 @@ import opt.HillClimbingProblem as HillClimbingProblem
 import opt.NeighborFunction as NeighborFunction
 import opt.RandomizedHillClimbing as RandomizedHillClimbing
 import opt.SimulatedAnnealing as SimulatedAnnealing
-import opt.example.FourPeaksEvaluationFunction as FourPeaksEvaluationFunction
+import opt.example.CountOnesEvaluationFunction as CountOnesEvaluationFunction
 import opt.ga.CrossoverFunction as CrossoverFunction
+# crossovers
+import opt.ga.UniformCrossOver as UniformCrossOver
 import opt.ga.SingleCrossOver as SingleCrossOver
+
+
 import opt.ga.DiscreteChangeOneMutation as DiscreteChangeOneMutation
 import opt.ga.GenericGeneticAlgorithmProblem as GenericGeneticAlgorithmProblem
 import opt.ga.GeneticAlgorithmProblem as GeneticAlgorithmProblem
 import opt.ga.MutationFunction as MutationFunction
 import opt.ga.StandardGeneticAlgorithm as StandardGeneticAlgorithm
-import opt.ga.UniformCrossOver as UniformCrossOver
 import opt.prob.GenericProbabilisticOptimizationProblem as GenericProbabilisticOptimizationProblem
 import opt.prob.MIMIC as MIMIC
 import opt.prob.ProbabilisticOptimizationProblem as ProbabilisticOptimizationProblem
@@ -47,44 +50,71 @@ T= N / 4
 fill = [2] * N
 ranges = array('i', fill)
 
-ef = FourPeaksEvaluationFunction(T)
-odd = DiscreteUniformDistribution(ranges)
+ef = CountOnesEvaluationFunction()
+initial_distribution = DiscreteUniformDistribution(ranges)
 nf = DiscreteChangeOneNeighbor(ranges)
-mf = DiscreteChangeOneMutation(ranges)
+mutation_function = DiscreteChangeOneMutation(ranges)
+
 cf = SingleCrossOver()
+
+
 df = DiscreteDependencyTree(.1, ranges)
-hcp = GenericHillClimbingProblem(ef, odd, nf)
-gap = GenericGeneticAlgorithmProblem(ef, odd, mf, cf)
-pop = GenericProbabilisticOptimizationProblem(ef, odd, df)
+hill_climing_problem = GenericHillClimbingProblem(ef, initial_distribution, nf)
+genetic_problem = GenericGeneticAlgorithmProblem(ef, initial_distribution, mutation_function, cf)
+probablistic_optimization = GenericProbabilisticOptimizationProblem(ef, initial_distribution, df)
 
 from time import time
 
 
-rhc = RandomizedHillClimbing(hcp)
-fit = FixedIterationTrainer(rhc, 600000)
+# rhc = RandomizedHillClimbing(hcp)
+# score = 0
+# iters = 0
+# t0 = time()
+#
+# while score < N:
+#     print score
+#     score = rhc.train()
+#     iters += 1
+#
+#
+# print "RHC: " + str(ef.value(rhc.getOptimal())), "time taken", time() - t0, "Iterations:", iters
+#
+# sa = SimulatedAnnealing(1E11, .95, hcp)
+# t0 = time()
+# iters = 0
+# score = 0
+#
+# while score < N:
+#     print score
+#     score = sa.train()
+#     iters += 1
+#
+# print "SA: " + str(ef.value(sa.getOptimal())), "time taken", time() - t0, "Iterations", iters
+
+ga = StandardGeneticAlgorithm(1000, 30, 1, genetic_problem)
 t0 = time()
-fit.train()
-print "RHC: " + str(ef.value(rhc.getOptimal())), "time taken", time() - t0
+iters = 0
+score = 0
 
-sa = SimulatedAnnealing(1E11, .95, hcp)
-fit = FixedIterationTrainer(sa, 600000)
+while score < N and iters < 10000:
+    ga.train()
+    score = ef.value(ga.getOptimal())
+    print score
+    iters += 1
 
+print "GA: " + str(ef.value(ga.getOptimal())), "time taken", time() - t0, "Iterations", iters
+
+mimic = MIMIC(200, 100, probablistic_optimization)
+score = 0
 t0 = time()
-fit.train()
-print "SA: " + str(ef.value(sa.getOptimal())), "time taken", time() - t0
+iters = 0
 
-ga = StandardGeneticAlgorithm(200, 100, 10, gap)
-fit = FixedIterationTrainer(ga, 20000)
+while score < N:
+    mimic.train()
+    score = ef.value(mimic.getOptimal())
+    print score
+    iters += 1
 
-t0 = time()
-fit.train()
+print "MIMIC: " + str(ef.value(mimic.getOptimal())), "time taken", time() - t0, "Iterations", iters
 
-print "GA: " + str(ef.value(ga.getOptimal())), "time taken", time() - t0
 
-mimic = MIMIC(50, 10, pop)
-fit = FixedIterationTrainer(mimic, 10000)
-
-t0 = time()
-fit.train()
-
-print "MIMIC: " + str(ef.value(mimic.getOptimal())), "time taken", time() - t0

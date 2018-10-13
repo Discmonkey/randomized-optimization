@@ -19,7 +19,7 @@ import opt.HillClimbingProblem as HillClimbingProblem
 import opt.NeighborFunction as NeighborFunction
 import opt.RandomizedHillClimbing as RandomizedHillClimbing
 import opt.SimulatedAnnealing as SimulatedAnnealing
-import opt.example.FourPeaksEvaluationFunction as FourPeaksEvaluationFunction
+import opt.example.CountOnesEvaluationFunction as CountOnesEvaluationFunction
 import opt.ga.CrossoverFunction as CrossoverFunction
 import opt.ga.SingleCrossOver as SingleCrossOver
 import opt.ga.DiscreteChangeOneMutation as DiscreteChangeOneMutation
@@ -47,7 +47,7 @@ T= N / 4
 fill = [2] * N
 ranges = array('i', fill)
 
-ef = FourPeaksEvaluationFunction(T)
+ef = CountOnesEvaluationFunction()
 odd = DiscreteUniformDistribution(ranges)
 nf = DiscreteChangeOneNeighbor(ranges)
 mf = DiscreteChangeOneMutation(ranges)
@@ -82,7 +82,7 @@ fit.train()
 print "GA: " + str(ef.value(ga.getOptimal())), "time taken", time() - t0
 
 mimic = MIMIC(50, 10, pop)
-fit = FixedIterationTrainer(mimic, 10000)
+fit = FixedIterationTrainer(mimic, 50)
 
 t0 = time()
 fit.train()

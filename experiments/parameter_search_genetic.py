@@ -77,7 +77,9 @@ def train(oa, network, oaName, instances, measure, fileobject):
 
 def test(test_instances, network, oaname, fileobject):
     correct_negatives = 0
+    incorrect_negatives = 0
     correct_positives = 0
+    incorrect_positives = 0
     total = 0
 
     for instance in test_instances:
@@ -95,13 +97,20 @@ def test(test_instances, network, oaname, fileobject):
         if actual == 1 and result == 1:
             correct_positives += 1
 
+        if actual == 1 and result == 0:
+            incorrect_positives += 1
+
         if actual == 0 and result == 0:
             correct_negatives += 1
 
+        if actual == 0 and result == 1:
+            incorrect_negatives += 1
+
         total += 1
 
-    fileobject.write("||" + oaname + " testing, correct_positives, correct_negatives, total\n")
-    fileobject.write(str(correct_positives) + str(correct_negatives) + str(total) + "\n")
+    fileobject.write("||" + oaname + " testing, correct_positives, incorrect_postivies, correct_negatives, incorrect_negatives, total\n")
+    fileobject.write(str(correct_positives) + "," + str(incorrect_positives) + ',' +  str(correct_negatives)
+                     + "," + str(incorrect_negatives) + ',' + str(total) + "\n")
 
 
 def main():
@@ -125,7 +134,7 @@ def main():
     results = ""
 
     for name in oa_names:
-        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, HIDDEN_LAYER_1, HIDDEN_LAYER_2, OUTPUT_LAYER])
+        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, OUTPUT_LAYER])
         networks.append(classification_network)
         nnop.append(NeuralNetworkOptimizationProblem(data_set, classification_network, measure))
 
@@ -136,8 +145,6 @@ def main():
 
     for i, name in enumerate(oa_names):
         start = time.time()
-        correct = 0
-        incorrect = 0
 
         train(oa[i], networks[i], oa_names[i], train_instances, measure, result_file)
         end = time.time()

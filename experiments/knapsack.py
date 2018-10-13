@@ -32,59 +32,73 @@ import opt.prob.GenericProbabilisticOptimizationProblem as GenericProbabilisticO
 import opt.prob.MIMIC as MIMIC
 import opt.prob.ProbabilisticOptimizationProblem as ProbabilisticOptimizationProblem
 import shared.FixedIterationTrainer as FixedIterationTrainer
-
+import opt.example.KnapsackEvaluationFunction as KnapsackEvaluationFunction
 from array import array
+
 
 
 
 """
 Commandline parameter(s):
-   none
+    none
 """
 
-N= 1000
-T= N / 4
-fill = [2] * N
+# Random number generator */
+random = Random()
+# The number of items
+NUM_ITEMS = 40
+# The number of copies each
+COPIES_EACH = 4
+# The maximum weight for a single element
+MAX_WEIGHT = 50
+# The maximum volume for a single element
+MAX_VOLUME = 50
+# The volume of the knapsack 
+KNAPSACK_VOLUME = MAX_VOLUME * NUM_ITEMS * COPIES_EACH * .4
+
+# create copies
+fill = [COPIES_EACH] * NUM_ITEMS
+copies = array('i', fill)
+
+# create weights and volumes
+fill = [0] * NUM_ITEMS
+weights = array('d', fill)
+volumes = array('d', fill)
+for i in range(0, NUM_ITEMS):
+    weights[i] = random.nextDouble() * MAX_WEIGHT
+    volumes[i] = random.nextDouble() * MAX_VOLUME
+
+
+# create range
+fill = [COPIES_EACH + 1] * NUM_ITEMS
 ranges = array('i', fill)
 
-ef = FourPeaksEvaluationFunction(T)
+ef = KnapsackEvaluationFunction(weights, volumes, KNAPSACK_VOLUME, copies)
 odd = DiscreteUniformDistribution(ranges)
 nf = DiscreteChangeOneNeighbor(ranges)
 mf = DiscreteChangeOneMutation(ranges)
-cf = SingleCrossOver()
+cf = UniformCrossOver()
 df = DiscreteDependencyTree(.1, ranges)
 hcp = GenericHillClimbingProblem(ef, odd, nf)
 gap = GenericGeneticAlgorithmProblem(ef, odd, mf, cf)
 pop = GenericProbabilisticOptimizationProblem(ef, odd, df)
 
-from time import time
-
-
 rhc = RandomizedHillClimbing(hcp)
-fit = FixedIterationTrainer(rhc, 600000)
-t0 = time()
+fit = FixedIterationTrainer(rhc, 200000)
 fit.train()
-print "RHC: " + str(ef.value(rhc.getOptimal())), "time taken", time() - t0
+print "RHC: " + str(ef.value(rhc.getOptimal()))
 
-sa = SimulatedAnnealing(1E11, .95, hcp)
-fit = FixedIterationTrainer(sa, 600000)
-
-t0 = time()
+sa = SimulatedAnnealing(100, .95, hcp)
+fit = FixedIterationTrainer(sa, 200000)
 fit.train()
-print "SA: " + str(ef.value(sa.getOptimal())), "time taken", time() - t0
+print "SA: " + str(ef.value(sa.getOptimal()))
 
-ga = StandardGeneticAlgorithm(200, 100, 10, gap)
-fit = FixedIterationTrainer(ga, 20000)
-
-t0 = time()
+ga = StandardGeneticAlgorithm(200, 150, 25, gap)
+fit = FixedIterationTrainer(ga, 1000)
 fit.train()
+print "GA: " + str(ef.value(ga.getOptimal()))
 
-print "GA: " + str(ef.value(ga.getOptimal())), "time taken", time() - t0
-
-mimic = MIMIC(50, 10, pop)
-fit = FixedIterationTrainer(mimic, 10000)
-
-t0 = time()
+mimic = MIMIC(200, 100, pop)
+fit = FixedIterationTrainer(mimic, 1000)
 fit.train()
-
-print "MIMIC: " + str(ef.value(mimic.getOptimal())), "time taken", time() - t0
+print "MIMIC: " + str(ef.value(mimic.getOptimal()))
