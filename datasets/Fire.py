@@ -49,7 +49,7 @@ class Fire(Data):
         if self.balance:
             self.df_raw = self.df_raw.groupby("FIRE_SIZE_CLASS")
             self.df_raw = self.df_raw.apply(
-                lambda x: x.sample(min(50000, len(x))).reset_index(drop=True)
+                lambda x: x.sample(min(10000, len(x))).reset_index(drop=True)
             )
 
         self.num_columns = len(self.df_raw.columns)
