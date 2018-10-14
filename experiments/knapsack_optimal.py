@@ -41,7 +41,7 @@ from array import array
 
 random = Random()
 # The number of items
-NUM_ITEMS = 1000
+NUM_ITEMS = 10000
 # The number of copies each
 COPIES_EACH = 15
 # The maximum weight for a single element
@@ -81,7 +81,7 @@ genetic_problem = GenericGeneticAlgorithmProblem(ef, initial_distribution, mutat
 probablistic_optimization = GenericProbabilisticOptimizationProblem(ef, initial_distribution, df)
 
 from time import time
-f = open("experiments/results/knapsack_optimal.txt", "w")
+f = open("experiments/results/knapsack_optimal2.txt", "w")
 
 f.write("starting RHC\n")
 rhc = RandomizedHillClimbing(hill_climbing_problem)
@@ -89,9 +89,9 @@ score = 0
 iters = 0
 t0 = time()
 
-while iters < 60000:
+while iters < 80000:
     score = rhc.train()
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 
@@ -103,9 +103,9 @@ t0 = time()
 iters = 0
 score = 0
 
-while iters < 60000:
+while iters < 80000:
     score = sa.train()
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) + "\n")
     iters += 1
 
 print "SA: " + str(ef.value(sa.getOptimal())), "time taken", time() - t0, "Iterations", iters
@@ -119,7 +119,7 @@ f.write("starting GA\n")
 while iters < 5000:
     ga.train()
     score = ef.value(ga.getOptimal())
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 print "GA: " + str(ef.value(ga.getOptimal())), "time taken", time() - t0, "Iterations", iters
@@ -133,7 +133,7 @@ f.write("starting MIMIC\n")
 while iters < 1000:
     mimic.train()
     score = ef.value(mimic.getOptimal())
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 print "MIMIC: " + str(ef.value(mimic.getOptimal())), "time taken", time() - t0, "Iterations", iters

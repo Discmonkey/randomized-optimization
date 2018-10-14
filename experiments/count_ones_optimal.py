@@ -59,62 +59,67 @@ cf = SingleCrossOver()
 
 
 df = DiscreteDependencyTree(.1, ranges)
-hill_climing_problem = GenericHillClimbingProblem(ef, initial_distribution, nf)
+hill_climbing_problem = GenericHillClimbingProblem(ef, initial_distribution, nf)
 genetic_problem = GenericGeneticAlgorithmProblem(ef, initial_distribution, mutation_function, cf)
 probablistic_optimization = GenericProbabilisticOptimizationProblem(ef, initial_distribution, df)
 
 from time import time
+f = open("experiments/results/countones_optimal_1000.txt", "w")
+
+f.write("starting RHC\n")
+rhc = RandomizedHillClimbing(hill_climbing_problem)
+score = 0
+iters = 0
+t0 = time()
+
+while iters < 60000:
+    score = rhc.train()
+    f.write(str(iters) + str(score) +"\n")
+    iters += 1
 
 
-# rhc = RandomizedHillClimbing(hcp)
-# score = 0
-# iters = 0
-# t0 = time()
-#
-# while score < N:
-#     print score
-#     score = rhc.train()
-#     iters += 1
-#
-#
-# print "RHC: " + str(ef.value(rhc.getOptimal())), "time taken", time() - t0, "Iterations:", iters
-#
-# sa = SimulatedAnnealing(1E11, .95, hcp)
-# t0 = time()
-# iters = 0
-# score = 0
-#
-# while score < N:
-#     print score
-#     score = sa.train()
-#     iters += 1
-#
-# print "SA: " + str(ef.value(sa.getOptimal())), "time taken", time() - t0, "Iterations", iters
+print "RHC: " + str(ef.value(rhc.getOptimal())), "time taken", time() - t0, "Iterations:", iters
 
-ga = StandardGeneticAlgorithm(1000, 30, 1, genetic_problem)
+f.write("starting SA\n")
+sa = SimulatedAnnealing(1E13, .95, hill_climbing_problem)
 t0 = time()
 iters = 0
 score = 0
 
-while score < N and iters < 10000:
+while iters < 60000:
+    score = sa.train()
+    f.write(str(iters) + str(score))
+    iters += 1
+
+print "SA: " + str(ef.value(sa.getOptimal())), "time taken", time() - t0, "Iterations", iters
+
+ga = StandardGeneticAlgorithm(200, 100, 10, genetic_problem)
+t0 = time()
+iters = 0
+score = 0
+
+f.write("starting GA\n")
+while iters < 20000:
     ga.train()
     score = ef.value(ga.getOptimal())
-    print score
+    print iters, score
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 print "GA: " + str(ef.value(ga.getOptimal())), "time taken", time() - t0, "Iterations", iters
 
-mimic = MIMIC(200, 100, probablistic_optimization)
+mimic = MIMIC(100, 50, probablistic_optimization)
 score = 0
 t0 = time()
 iters = 0
 
-while score < N:
+f.write("starting MIMIC\n")
+while iters < 100:
     mimic.train()
     score = ef.value(mimic.getOptimal())
-    print score
+    print iters, score
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 print "MIMIC: " + str(ef.value(mimic.getOptimal())), "time taken", time() - t0, "Iterations", iters
-
 

@@ -44,7 +44,7 @@ Commandline parameter(s):
    none
 """
 
-N= 10000
+N= 1000
 T= N / 4
 fill = [2] * N
 ranges = array('i', fill)
@@ -62,7 +62,7 @@ genetic_problem = GenericGeneticAlgorithmProblem(ef, initial_distribution, mutat
 probablistic_optimization = GenericProbabilisticOptimizationProblem(ef, initial_distribution, df)
 
 from time import time
-f = open("experiments/results/fourpeaks_optimal.txt", "w")
+f = open("experiments/results/fourpeaks_optimal_1000.txt", "w")
 
 f.write("starting RHC\n")
 rhc = RandomizedHillClimbing(hill_climbing_problem)
@@ -72,7 +72,7 @@ t0 = time()
 
 while iters < 60000:
     score = rhc.train()
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 
@@ -86,36 +86,36 @@ score = 0
 
 while iters < 60000:
     score = sa.train()
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) + "\n")
     iters += 1
 
 print "SA: " + str(ef.value(sa.getOptimal())), "time taken", time() - t0, "Iterations", iters
 
-ga = StandardGeneticAlgorithm(200, 100, 10, genetic_problem)
+ga = StandardGeneticAlgorithm(500, 100, 10, genetic_problem)
 t0 = time()
 iters = 0
 score = 0
 
 f.write("starting GA\n")
-while iters < 20000:
+while iters < 30000:
     ga.train()
     score = ef.value(ga.getOptimal())
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 print "GA: " + str(ef.value(ga.getOptimal())), "time taken", time() - t0, "Iterations", iters
 
-mimic = MIMIC(200, 100, probablistic_optimization)
+mimic = MIMIC(100, 50, probablistic_optimization)
 score = 0
 t0 = time()
 iters = 0
 
 f.write("starting MIMIC\n")
-while iters < 1000:
+while iters < 100:
     mimic.train()
     score = ef.value(mimic.getOptimal())
     print iters, score
-    f.write(str(iters) + str(score))
+    f.write(str(iters) + "," + str(score) +"\n")
     iters += 1
 
 print "MIMIC: " + str(ef.value(mimic.getOptimal())), "time taken", time() - t0, "Iterations", iters

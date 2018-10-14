@@ -1,12 +1,13 @@
 import matplotlib.pyplot as plt
 
 
-neural_net_performance = [81, 25, 60, 34]
+neural_net_performance = [390, 110, 337, 163]
+total = sum(neural_net_performance)
 
 peak_accuracy = 0
 all_genetic_results = []
 with open("/home/biometrics/BiometricsHg/sandbox/mgrinchenko/"
-          "randomized-optimization/experiments/results/genetic_parameter_search.txt") as f:
+          "randomized-optimization/experiments/results/genetic_parameter_search2.txt") as f:
     for line in f:
         if '||' in line:
             results = next(f)
@@ -18,7 +19,7 @@ print all_genetic_results
 peak_accuracy = 0
 all_annealing_results = []
 with open("/home/biometrics/BiometricsHg/sandbox/mgrinchenko/randomized-optimization/"
-          "experiments/results/simulated_annealing.txt") as f:
+          "experiments/results/simulated_annealing2.txt") as f:
     for line in f:
         if '||' in line:
             results = next(f)
@@ -30,7 +31,7 @@ print all_annealing_results
 peak_accuracy = 0
 all_hillclimb_results = []
 with open("/home/biometrics/BiometricsHg/sandbox/mgrinchenko/randomized-optimization/"
-          "experiments/results/hill_climb_tests.txt") as f:
+          "experiments/results/hill_climb_tests2.txt") as f:
     for line in f:
         if '||' in line:
             results = next(f)
@@ -41,7 +42,7 @@ print all_hillclimb_results
 
 
 def get_accuracy(some_list):
-    return map(lambda pp: float(pp[0] + pp[2]) / 200, some_list)
+    return map(lambda pp: float(pp[0] + pp[2]) / total, some_list)
 
 
 def get_pos_recall(some_list):
@@ -60,9 +61,9 @@ figure, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(2, 3)
 
 for ax in [ax1, ax2, ax3, ax4, ax5, ax6]:
     ax.set_ylim([0, 1])
-    
+
 ax1.set_title("Peak accuracy")
-ax1.axhline(float(neural_net_performance[0] + neural_net_performance[2]) / 200, label="Backprop", color='red')
+ax1.axhline(float(neural_net_performance[0] + neural_net_performance[2]) / total, label="Backprop", color='red')
 ax1.bar(["HC", "SA", "GA"], [max(get_accuracy(res)) for res in [all_hillclimb_results, all_annealing_results,
                                                                 all_genetic_results]])
 
@@ -77,7 +78,7 @@ ax3.bar(["HC", "SA", "GA"], [max(get_neg_recall(res)) for res in [all_hillclimb_
                                                                   all_genetic_results]])
 
 ax4.set_title("Avg accuracy")
-ax4.axhline(float(neural_net_performance[0] + neural_net_performance[2]) / 200, label="Backprop", color='red')
+ax4.axhline(float(neural_net_performance[0] + neural_net_performance[2]) / total, label="Backprop", color='red')
 ax4.bar(["HC", "SA", "GA"], [mean(get_accuracy(res)) for res in [all_hillclimb_results, all_annealing_results,
                                                                 all_genetic_results]])
 

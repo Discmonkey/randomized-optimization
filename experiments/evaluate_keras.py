@@ -6,8 +6,8 @@ import numpy as np
 
 num_columns = 18
 
-model_path = "/home/biometrics/BiometricsHg/sandbox/mgrinchenko/randomized-optimization/experiments/results/reduced_set_lr_0001_no_momentumsave_model"
-data_path = "/home/biometrics/BiometricsHg/sandbox/mgrinchenko/randomized-optimization/experiments/results/test_fire_reduced.csv"
+model_path = "/home/biometrics/BiometricsHg/sandbox/mgrinchenko/randomized-optimization/experiments/training/fire/reduced_set_lr_0001_no_momentumsave_model"
+data_path = "/home/biometrics/BiometricsHg/sandbox/mgrinchenko/randomized-optimization/datasets/cache/test_fire_two_layer.csv"
 
 data = pd.read_csv(data_path)
 

@@ -16,16 +16,16 @@ from opt.example import NeuralNetworkOptimizationProblem
 
 import opt.SimulatedAnnealing as SimulatedAnnealing
 
-TRAIN_FILE = os.path.join("datasets", "cache", "train_fire_reduced.csv")
-TEST_FILE = os.path.join("datasets", "cache", "test_fire_reduced.csv")
-WRITE_DIR = os.path.join("experiments", "results", "simulated_annealing.txt")
+TRAIN_FILE = os.path.join("datasets", "cache", "train_fire_two_layer.csv")
+TEST_FILE = os.path.join("datasets", "cache", "test_fire_two_layer.csv")
+WRITE_DIR = os.path.join("experiments", "results", "simulated_annealing2.txt")
 INPUT_LAYER = 18
 HIDDEN_LAYER_1 = 18
 HIDDEN_LAYER_2 = 8
 
 # training this network slightly differently since the example trains like a regression problem :(
 OUTPUT_LAYER = 1
-TRAINING_ITERATIONS = 1500
+TRAINING_ITERATIONS = 10000
 
 
 def initialize_instances(filename):
@@ -125,16 +125,14 @@ def main():
     networks = []  # BackPropagationNetwork
     nnop = []  # NeuralNetworkOptimizationProblem
     oa = []  # OptimizationAlgorithm
-    params = [(1E12, .97), (1E12, .95), (1E12, .93), (1E12, .91), (1E12, .89), (1E12, .85), (1E12, .80),
-              (1E15, .97), (1E15, .95), (1E15, .93), (1E15, .91), (1E15, .89), (1E15, .85), (1E15, .80),
-              (1E9, .97), (1E9, .95), (1E9, .93), (1E9, .91), (1E9, .89), (1E9, .85), (1E9, .80)]
+    params = [(1E15, .93), (1E13, .95)]
 
     oa_names = [','.join(map(str, item)) for item in params]
 
     results = ""
 
     for name in oa_names:
-        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, OUTPUT_LAYER])
+        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, HIDDEN_LAYER_1, OUTPUT_LAYER])
         networks.append(classification_network)
         nnop.append(NeuralNetworkOptimizationProblem(data_set, classification_network, measure))
 

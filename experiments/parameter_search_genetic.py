@@ -16,16 +16,16 @@ from opt.example import NeuralNetworkOptimizationProblem
 
 import opt.ga.StandardGeneticAlgorithm as StandardGeneticAlgorithm
 
-TRAIN_FILE = os.path.join("datasets", "cache", "train_fire_reduced.csv")
-TEST_FILE = os.path.join("datasets", "cache", "test_fire_reduced.csv")
-WRITE_DIR = os.path.join("experiments", "results", "genetic_parameter_search.txt")
+TRAIN_FILE = os.path.join("datasets", "cache", "train_fire_two_layer.csv")
+TEST_FILE = os.path.join("datasets", "cache", "test_fire_two_layer.csv")
+WRITE_DIR = os.path.join("experiments", "results", "genetic_parameter_search2.txt")
 INPUT_LAYER = 18
 HIDDEN_LAYER_1 = 18
 HIDDEN_LAYER_2 = 8
 
 # training this network slightly differently since the example trains like a regression problem :(
 OUTPUT_LAYER = 1
-TRAINING_ITERATIONS = 1500
+TRAINING_ITERATIONS = 2000
 
 
 def initialize_instances(filename):
@@ -125,16 +125,15 @@ def main():
     networks = []  # BackPropagationNetwork
     nnop = []  # NeuralNetworkOptimizationProblem
     oa = []  # OptimizationAlgorithm
-    params = [(100, 100, 50), (100, 75, 50), (100, 50, 50), (100, 75, 75), (100, 75, 25), (100, 100, 100),
-              (200, 100, 50), (200, 200, 50), (200, 200, 200), (200, 150, 100),
-              (400, 200, 100), (400, 300, 100), (400, 300, 150)]
+    params = [(200, 100, 25),
+              (200, 100, 50)]
 
     oa_names = [','.join(map(str, item)) for item in params]
 
     results = ""
 
     for name in oa_names:
-        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, OUTPUT_LAYER])
+        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, HIDDEN_LAYER_1, OUTPUT_LAYER])
         networks.append(classification_network)
         nnop.append(NeuralNetworkOptimizationProblem(data_set, classification_network, measure))
 

@@ -8,10 +8,11 @@ from sklearn.model_selection import train_test_split
 import datetime
 import numpy as np
 
-df = pd.read_csv(os.path.join(base, "..", "datasets/cache/train_fire_reduced.csv"))
+df = pd.read_csv(os.path.join(base, "..", "datasets/cache/train_fire_two_layer.csv"))
 num_columns = 18
 model = keras.models.Sequential()
 model.add(keras.layers.InputLayer(input_shape=(num_columns,)))
+model.add(keras.layers.Dense(18, activation='relu'))
 model.add(keras.layers.Dense(18, activation='relu'))
 model.add(keras.layers.Dense(2, activation='softmax'))
 

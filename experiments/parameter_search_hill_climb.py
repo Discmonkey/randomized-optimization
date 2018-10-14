@@ -16,15 +16,15 @@ from opt.example import NeuralNetworkOptimizationProblem
 
 import opt.RandomizedHillClimbing as RandomizedHillClimbing
 
-TRAIN_FILE = os.path.join("datasets", "cache", "train_fire_reduced.csv")
-TEST_FILE = os.path.join("datasets", "cache", "test_fire_reduced.csv")
-WRITE_DIR = os.path.join("experiments", "results", "hill_climb_tests.txt")
+TRAIN_FILE = os.path.join("datasets", "cache", "train_fire_two_layer.csv")
+TEST_FILE = os.path.join("datasets", "cache", "test_fire_two_layer.csv")
+WRITE_DIR = os.path.join("experiments", "results", "hill_climb_tests2.txt")
 INPUT_LAYER = 18
 HIDDEN_LAYER_1 = 18
 
 # training this network slightly differently since the example trains like a regression problem :(
 OUTPUT_LAYER = 1
-TRAINING_ITERATIONS = 10000
+TRAINING_ITERATIONS = 30000
 
 
 def initialize_instances(filename):
@@ -131,7 +131,7 @@ def main():
     results = ""
 
     for name in oa_names:
-        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, OUTPUT_LAYER])
+        classification_network = factory.createClassificationNetwork([INPUT_LAYER, HIDDEN_LAYER_1, HIDDEN_LAYER_1, OUTPUT_LAYER])
         networks.append(classification_network)
         nnop.append(NeuralNetworkOptimizationProblem(data_set, classification_network, measure))
 
